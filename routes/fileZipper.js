@@ -6,8 +6,8 @@ let fileZipper = {};
 fileZipper.zipDirectory = function (directory) {
     return new Promise(function (resolve, reject) {
 
-
-    // let output = fs.createWriteStream(workingDir + directory + '.zip');
+    let workingDir = __dirname + '/img/output/';
+    let output = fs.createWriteStream(workingDir + directory + '.zip');
 
 
     let archive = archiver('zip', {
@@ -21,7 +21,7 @@ fileZipper.zipDirectory = function (directory) {
 
     archive.on('end', function () {
         console.log('Data has been drained');
-
+        resolve(directory);
 
     });
 
@@ -37,14 +37,13 @@ fileZipper.zipDirectory = function (directory) {
     archive.on('error', function(err) {
         throw err;
     });
-    let obj = {
-        directory:directory,
-        archive:archive
-    };
-        resolve(obj);
 
+    archive.pipe(output);
 
+    workingDir = workingDir.concat(directory + '/');
+    archive.directory(workingDir, false);
 
+    archive.finalize();
     });
 };
 

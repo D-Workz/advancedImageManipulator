@@ -6,8 +6,6 @@ const grayscale = require('./grayscale');
 const enhance = require('./enhance');
 const fileZipper = require('./fileZipper');
 const fs = require('fs');
-// const archiver = require('archiver')
-// const archive = archiver('zip');
 
 
 router.post('/upload', function (req, res, next) {
@@ -18,51 +16,15 @@ router.post('/upload', function (req, res, next) {
 
     getZipForImage(image)
         .then(function (data) {
+            let pathOnly = __dirname + '/img/output/';
 
-            let archive = data.archive;
-            let workingDir = __dirname + '/img/output/';
-            // archive.pipe(output);
-
-            workingDir = workingDir.concat(data + '/');
-            archive.directory(workingDir, false);
-
-            // archive.finalize();
-
-
-            // let pathOnly = __dirname + '/img/output/';
-
-
-            // archive.on('error', function(err) {
-            //     res.status(500).send({error: err.message});
-            // });
-            //
-            // //on stream closed we can end the request
-            // archive.on('end', function() {
-            //     console.log('Archive wrote %d bytes', archive.pointer());
-            // });
-
-            //set the archive name
-            res.attachment('archive-name.zip');
-
-            //this is the streaming magic
-            archive.pipe(res);
-
-            // const files = [__dirname + '/files/上午.png', __dirname + '/files/中午.json'];
-            //
-            // for(const i in files) {
-            //     archive.file(files[i], { name: path.basename(files[i]) });
-            // }
-            //
-            archive.finalize();
-
-
-
-
-            // res.setHeader('Content-type', 'application/zip');
-            // return res
-            //     .zip([
-            //     { path: pathOnly+data+'.zip', name: data+'.zip'}
-            // ])
+            res.download(pathOnly+'/'+data+'.zip');
+            //res.setHeader('Content-type', 'application/zip');
+            /*res.setHeader('Content-disposition', 'attachment; filename=asd.zip');
+            return res
+                .zip([
+                { path: pathOnly+data+'.zip', name: data+'.zip'}
+            ])*/
         })
         .catch(function (error) {
             return next(error);

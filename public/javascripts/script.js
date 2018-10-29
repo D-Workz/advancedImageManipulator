@@ -15,7 +15,6 @@ $(document).ready(function() {
             var $loginBox = $("#uploadBox");
             console.log(response);
             $loginBox.css("display","none");
-
             $('#error').css("display","none");
             $('#content').css("display","block");
 
@@ -67,8 +66,8 @@ function uploadImage(callback) {
         data: {
             image: uploadedImage
         },
-        success: function(response){
-            window.location = response;
+        success: function (data){
+            callback(data);
         }
     });
     

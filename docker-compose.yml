@@ -1,0 +1,24 @@
+version: '3.4'
+
+services:
+  api:
+    build: api
+    restart: always
+    ports:
+    - 127.0.0.1:3001:3001
+    volumes:
+    - ./api/data:/var/api/data/
+    depends_on:
+    - apiCouchDB
+
+  apiCouchDB:
+    image: apache/couchdb:2.1
+    ports:
+    - "5984:5984"
+    environment:
+      COUCHDB_USER: whisk_admin
+      COUCHDB_PASSWORD: some_passw0rd
+    volumes:
+    - ./apiCouchDB/data/:/var/apicouchdb:rw
+
+

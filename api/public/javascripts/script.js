@@ -60,7 +60,7 @@ function readImageFile(input) {
 function uploadImage(callback) {
     console.log("trying to upload.");
     url = "http://localhost:3001/images/upload";
-  $.ajax({
+    $.ajax({
         url: url,
         type: "post",
         data: {

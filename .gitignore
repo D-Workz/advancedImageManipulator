@@ -1,4 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
-routes/img/output/
-routes/img/uploaded/
+api/routes/img/output/
+api/routes/img/uploaded/

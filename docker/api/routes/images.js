@@ -56,26 +56,6 @@ router.post('/upload', function (req, res, next) {
     })
 
 
-
-
-
-
-    // getZipForImage(image)
-    //     .then(function (data) {
-    //         let pathOnly = __dirname + '/img/output/';
-    //
-    //         res.download(pathOnly+'/'+data+'.zip');
-    //         //res.setHeader('Content-type', 'application/zip');
-    //         /*res.setHeader('Content-disposition', 'attachment; filename=asd.zip');
-    //         return res
-    //             .zip([
-    //             { path: pathOnly+data+'.zip', name: data+'.zip'}
-    //         ])*/
-    //     })
-    //     .catch(function (error) {
-    //         return next(error);
-    //     });
-
 });
 
 function initDBsaveImage(image) {
@@ -98,60 +78,33 @@ function initDBsaveImage(image) {
 }
 
 function initCouchDB() {
+    let dbExists = false;
     return new Promise(function (resolve, reject) {
         nano.db.list().then((body) => {
             body.forEach((db) => {
-                if(db !== "images"){
-                    nano.db.create('images')
-                        .then(resp =>{
-                            console.log("DB created ", resp);
-                            resolve(true);
-                        })
-                        . catch(err =>{
-                            console.error("DB error ", err);
-                            reject(false);
-                        })
-                }else{
-                    console.log("DB existed.");
-                    resolve(true);
+                if(db === "images"){
+                    dbExists = true;
                 }
             });
+            if(!dbExists){
+                nano.db.create('images')
+                    .then(resp =>{
+                        console.log("DB created ", resp);
+                        resolve(true);
+                    })
+                    . catch(err =>{
+                        console.error("DB error ", err);
+                        reject(false);
+                    })
+            }else{
+                console.log("DB existed.");
+                resolve(true);
+            }
+
         });
     });
 }
 
-function getZipForImage(base64image) {
-
-    let imageBuffer = decodeBase64Image(base64image);
-    let filename = (Math.round((new Date()).getTime() / 1000)).toString();
-
-
-    let pathOnly = __dirname + '/img/uploaded/';
-    let fullPathWoExtension = pathOnly + filename + '.';
-    let fullPath = fullPathWoExtension + imageType;
-
-    try {
-        return new Promise(function (resolve,reject) {
-            fs.writeFile(fullPath, imageBuffer.data, function (err) {
-                if (err) {
-                    console.error('ERROR:', err);
-                }
-                console.log('successfully saved ' + filename);
-                return watermark.watermarkImage(fullPath, filename, imageType)
-                    .then(wimage => {
-                        return Promise.all([
-                            grayscale.grayscaleImage(wimage, filename, imageType),
-                            enhance.enhanceImage(wimage, filename, imageType)
-                        ]).then(result => {
-                            resolve(fileZipper.zipDirectory(filename))
-                        })
-                    });
-            });
-        })
-    } catch (error) {
-        console.error('ERROR:', error);
-    }
-}
 
 
 

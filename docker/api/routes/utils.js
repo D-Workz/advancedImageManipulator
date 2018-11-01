@@ -34,7 +34,7 @@ function updateDocument(documentName, image, type, noOfTries) {
     return new Promise(function (resolve, reject) {
         images.get(documentName).then(imageDoc => {
             imageDoc[type] = {
-                base64string: image,
+                // base64string: image,
                 type: imageBase64.type,
                 data: imageBase64.data,
                 fileType: fileType

@@ -46,7 +46,17 @@ fileZipper.getZippedImages = function (filename) {
                     zip.append(greyscaleBuffer, {name: "greyscale"});
                     zip.append(enhanceBuffer, {name: "enhance"});
                     resolve(zip);
-
+                    // let filePath = __dirname+"/zip/"+filename+"/";
+                    // fs.mkdirSync(filePath);
+                    // new Promise.all([
+                    //     writeToFile(imageDoc.greyscale.data, filePath+"greyscale."+imageDoc.greyscale.fileType),
+                    //     writeToFile(imageDoc.original.data, filePath+"original."+imageDoc.original.fileType),
+                    //     writeToFile(imageDoc.watermark.data, filePath+"watermark."+imageDoc.watermark.fileType),
+                    //     writeToFile(imageDoc.enhance.data, filePath+"enhance."+imageDoc.enhance.fileType)
+                    // ]).then( ret =>{
+                    //     zip.directory(filePath,false);
+                    //     resolve(zip);
+                    // })
                 }else{
                     let response = {
                         status: "404",
@@ -69,4 +79,18 @@ fileZipper.getZippedImages = function (filename) {
 };
 
 
+function writeToFile(data, fullPath){
+    return new Promise(function (resolve, reject) {
+        return fs.writeFile(fullPath, data,
+            function (err) {
+                if (err) {
+                    console.error('ERROR:', err);
+                    reject();
+                }
+                console.log('successfully saved ' + fullPath);
+                resolve();
+            });
+
+    });
+}
 module.exports = fileZipper;

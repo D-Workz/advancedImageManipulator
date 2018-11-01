@@ -26,11 +26,14 @@ watermark.watermarkImage = function (filename){
                         })
                 }).catch(function (e) {
                     reject(e);
-                // console.log(e);
             })
         }).catch( err => {
-            // console.error("Couldnt get image form DB", err);
-            reject(err);
+            let response = {
+                status: "404",
+                err:err,
+                message:"Couldn't find image to watermark, upload an image first."
+            };
+            reject(response);
         })
     });
 

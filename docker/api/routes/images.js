@@ -16,18 +16,42 @@ router.post('/upload', function (req, res, next) {
     }
     let image = req.body.image;
 
-    initDBsaveImage(image).then(imageName => {
-        console.log(imageName);
-        watermark.watermarkImage(imageName)
-            .then(wimage => {
-                return Promise.all([
-                    grayscale.grayscaleImage(wimage),
-                    enhance.enhanceImage(wimage)
-                ]).then(result => {
-
-
-                    resolve(fileZipper.zipDirectory(filename))
-                })
+    return initDBsaveImage(image)
+        .then(imageName => {
+            return watermark.watermarkImage(imageName)
+                .then(wimage => {
+                    return Promise.all([
+                        grayscale.grayscaleImage(wimage),
+                        enhance.enhanceImage(wimage)
+                    ]).then(result => {
+                        if(result[1] === result[0]){
+                            console.log("All image types saved.");
+                            let filename = result[0];
+                            (fileZipper.getZippedImages(filename)).then(zip =>{
+                                zip.pipe(res);
+                                res.setHeader('Content-disposition', 'attachment; filename=' + filename + '.zip');
+                                zip.finalize();
+                            }).catch(err =>{
+                                if(err.status === 404){
+                                    return res.status(404).json({message:err.message});
+                                }else {
+                                    return res.status(500).json({message:"Unknown error."});
+                                }
+                            })
+                        }
+                    }).catch(err =>{
+                        if(err.status === 404){
+                            return res.status(404).json({message:err.message});
+                        }else {
+                            return res.status(500).json({message:"Unknown error."});
+                        }
+                    })
+            }).catch(err => {
+                if(err.status === 404){
+                    return res.status(404).json({message:err.message});
+                }else {
+                    return res.status(500).json({message:"Unknown error."});
+                }
             });
     })
 

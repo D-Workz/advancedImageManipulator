@@ -27,8 +27,12 @@ grayscale.grayscaleImage = function (filename){
                 reject(err);
             })
         }).catch( err => {
-            console.error("Couldnt get image form DB", err);
-            reject(err);
+            let response = {
+                status: "404",
+                err:err,
+                message:"Couldn't find image to greyscale, upload an image first."
+            };
+            reject(response);
         })
 
     });

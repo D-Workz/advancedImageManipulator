@@ -20,22 +20,13 @@ utils.saveImageToDB = function(image, filename, type) {
                 })
                 .catch(err => {
                     console.log("Couldnt update document.");
-                    noOfTries++;
-                    if(noOfTries<=5){
-                        console.log("("+noOfTries+"/5) Trying to update document again.");
-                        setTimeout(function(){
-                            updateDocument(filename,image,type);
-                        }, 1000);
-                    }else {
-                        console.error("("+noOfTries+"/5) Stop trying.", err);
-                        reject(err);
-                    }
+                    reject(err);
                 })
         }
     });
 };
 
-function updateDocument(documentName, image, type) {
+function updateDocument(documentName, image, type, noOfTries) {
     let images = nano.use('images');
     let imageBase64 = decodeBase64Image(image);
     let fileType = imageBase64.type.match(/\/(.*?)$/)[1];
@@ -53,7 +44,24 @@ function updateDocument(documentName, image, type) {
                         console.log("Successfully saved " + type + " image in DB");
                         resolve(documentName);
                     } else {
-                        reject(error);
+                        if(noOfTries<=5){
+                            noOfTries++;
+                            console.log("("+noOfTries+"/5) Trying to update document again.");
+                            setTimeout(function(){
+                                updateDocument(documentName,image,type, noOfTries)
+                                    .then(imageName => {
+                                    resolve(imageName);
+                                })
+                                    .catch(err => {
+                                        //TODO check better recursions only supports one time fail update
+                                        console.log("Couldnt update document.");
+                                        reject(err);
+                                    })
+                            }, 100);
+                        }else {
+                            console.error("("+noOfTries+"/5) Stop trying.", error);
+                            reject(error);
+                        }
                     }
                 });
         }).catch(err => {
@@ -62,6 +70,7 @@ function updateDocument(documentName, image, type) {
         });
     });
 }
+
 
 function insertNewDocument(documentName, image) {
     let images = nano.use('images');
@@ -99,7 +108,6 @@ function decodeBase64Image(dataString) {
 
     response.type = matches[1];
     response.data = matches[2];
-
     return response;
 }
 

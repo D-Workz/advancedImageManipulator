@@ -1,7 +1,9 @@
 let enhance = {};
 const jimp = require('jimp');
 const utils = require('./utils');
-const nano = require('nano')('http://whisk_admin:some_passw0rd@localhost:3002');
+const config = require('config');
+
+const nano = require('nano')(config.get("DBUrl"));
 
 
 

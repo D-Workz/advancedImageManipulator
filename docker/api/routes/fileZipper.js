@@ -1,8 +1,8 @@
 const fs = require('fs');
 const archiver = require('archiver');
 let fileZipper = {};
-const nano = require('nano')('http://whisk_admin:some_passw0rd@localhost:3002');
-const base64Img = require('base64-img');
+const config = require('config');
+const nano = require('nano')(config.get("DBUrl"));
 
 fileZipper.getZippedImages = function (filename) {
     let filePath = __dirname+"/zip/"+filename+"/";

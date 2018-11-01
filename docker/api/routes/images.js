@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const zip = require('express-zip');
 const watermark = require('./watermark');
 const grayscale = require('./grayscale');
 const utils = require('./utils');
 const enhance = require('./enhance');
 const fileZipper = require('./fileZipper');
 const fs = require('fs');
-const nano = require('nano')('http://whisk_admin:some_passw0rd@localhost:3002');
+const config = require('config');
+const nano = require('nano')(config.get("DBUrl"));
 
 
 router.post('/upload', function (req, res, next) {

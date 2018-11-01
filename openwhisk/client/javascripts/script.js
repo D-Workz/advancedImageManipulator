@@ -1,4 +1,7 @@
-var url;
+var url = "http://localhost:3001/images/upload";
+url = "http://192.168.0.11:9090/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/upload";
+url = "http://192.168.0.11:9090/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/upload";
+
 var uploadedImage;
 
 $(document).ready(function() {
@@ -59,7 +62,6 @@ function readImageFile(input) {
 
 function uploadImage(callback) {
     console.log("trying to upload.");
-    url = "http://localhost:3001/images/upload";
     $.ajax({
         url: url,
         type: "post",

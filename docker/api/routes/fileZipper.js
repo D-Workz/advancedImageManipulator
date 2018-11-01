@@ -5,6 +5,7 @@ const nano = require('nano')('http://whisk_admin:some_passw0rd@localhost:3002');
 const base64Img = require('base64-img');
 
 fileZipper.getZippedImages = function (filename) {
+    let filePath = __dirname+"/zip/"+filename+"/";
     return new Promise(function (resolve, reject) {
         let images = nano.use('images');
         images.get(filename)
@@ -39,24 +40,15 @@ fileZipper.getZippedImages = function (filename) {
                         throw err;
 
                     });
-                    let greyscaleBuffer = new Buffer(imageDoc.greyscale.data, 'base64');
-                    let enhanceBuffer = new Buffer(imageDoc.enhance.data, 'base64');
-                    greyscaleBuffer = Buffer.from(greyscaleBuffer);
-                    enhanceBuffer = Buffer.from(enhanceBuffer);
-                    zip.append(greyscaleBuffer, {name: "greyscale"});
-                    zip.append(enhanceBuffer, {name: "enhance"});
+
+                    // I have to write the images ones to disc since I dont know how to decode tthe correctly straight into zip.
+
+                    fs.mkdirSync(filePath);
+                    fs.writeFileSync(filePath+"greyscale."+imageDoc.greyscale.fileType,new Buffer(imageDoc.greyscale.data, 'base64'))
+                    fs.writeFileSync(filePath+"enhance."+imageDoc.enhance.fileType,new Buffer(imageDoc.enhance.data, 'base64'))
+                    zip.directory(filePath,false);
                     resolve(zip);
-                    // let filePath = __dirname+"/zip/"+filename+"/";
-                    // fs.mkdirSync(filePath);
-                    // new Promise.all([
-                    //     writeToFile(imageDoc.greyscale.data, filePath+"greyscale."+imageDoc.greyscale.fileType),
-                    //     writeToFile(imageDoc.original.data, filePath+"original."+imageDoc.original.fileType),
-                    //     writeToFile(imageDoc.watermark.data, filePath+"watermark."+imageDoc.watermark.fileType),
-                    //     writeToFile(imageDoc.enhance.data, filePath+"enhance."+imageDoc.enhance.fileType)
-                    // ]).then( ret =>{
-                    //     zip.directory(filePath,false);
-                    //     resolve(zip);
-                    // })
+
                 }else{
                     let response = {
                         status: "404",
@@ -79,18 +71,4 @@ fileZipper.getZippedImages = function (filename) {
 };
 
 
-function writeToFile(data, fullPath){
-    return new Promise(function (resolve, reject) {
-        return fs.writeFile(fullPath, data,
-            function (err) {
-                if (err) {
-                    console.error('ERROR:', err);
-                    reject();
-                }
-                console.log('successfully saved ' + fullPath);
-                resolve();
-            });
-
-    });
-}
 module.exports = fileZipper;

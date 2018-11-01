@@ -1,5 +1,6 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
 docker/api/routes/img/output/
+docker/api/routes/zip/
 docker/api/routes/img/uploaded/
 docker/api/node_modules

@@ -14,11 +14,11 @@ services:
   apiCouchDB:
     image: apache/couchdb:2.1
     ports:
-    - "5984:5984"
+    - "3002:5984"
     environment:
       COUCHDB_USER: whisk_admin
       COUCHDB_PASSWORD: some_passw0rd
     volumes:
-    - ./apiCouchDB/data/:/var/apicouchdb:rw
+    - ./apiCouchDB/data/:/usr/local/var/lib/couchdb:rw
 
 

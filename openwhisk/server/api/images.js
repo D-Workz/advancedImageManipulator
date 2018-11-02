@@ -15,11 +15,6 @@ function main(params){
         return response;
     }
     return initDBsaveImage(image)
-        // .then( imageName => {
-        //     response.status = 200;
-        //     response.message = imageName;
-        //     return response;
-        // })
 }
 
 module.exports.main=main;

@@ -1,11 +1,12 @@
-let watermark = {};
 const jimp = require('jimp');
+let watermarkImage = __dirname+"/watermark.png";
 const utils = require('./utils');
-let watermarkImage = __dirname+"/img/watermark.png";
-const nano = require('nano')('http://whisk_admin:some_passw0rd@localhost:3002');
+const config = require('config');
+const nano = require('nano')(config.get("DBUrl"));
 
 
-watermark.watermarkImage = function (filename){
+function main(params){
+    let filename = params['filename'];
     return new Promise(function (resolve, reject) {
         let images = nano.use('images');
         images.get(filename).then(imageDoc =>{
@@ -16,17 +17,17 @@ watermark.watermarkImage = function (filename){
                 .then(images => {
                     images[0].composite(images[1], 0, 250);
                     images[0].getBase64(jimp.AUTO, (err, image) => {
-                            if(err){
-                                reject(err);
-                            }
-                            utils.saveImageToDB(image,filename,"watermark")
+                        if(err){
+                            reject(err);
+                        }
+                        utils.saveImageToDB(image,filename,"watermark")
                             .then(name =>{
-                                resolve(name);
+                                resolve({name:name});
                             })
-                        })
+                    })
                 }).catch(function (e) {
                     reject(e);
-            })
+                })
         }).catch( err => {
             let response = {
                 status: "404",
@@ -37,9 +38,6 @@ watermark.watermarkImage = function (filename){
         })
     });
 
+}
 
-
-};
-
-
-module.exports = watermark;
+module.exports.main=main;

@@ -28,9 +28,10 @@ router.post('/upload', function (req, res, next) {
                             console.log("All image types saved.");
                             let filename = result[0];
                             (fileZipper.getZippedImages(filename)).then(zip =>{
-                                zip.pipe(res);
+                                // zip.pipe(res);
                                 res.setHeader('Content-disposition', 'attachment; filename=' + filename + '.zip');
-                                zip.finalize();
+                                return res.attachment(zip);
+                                // zip.finalize();
                             }).catch(err =>{
                                 if(err.status === 404){
                                     return res.status(404).json({message:err.message});

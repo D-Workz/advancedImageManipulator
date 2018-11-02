@@ -1,11 +1,11 @@
 const fs = require('fs');
 const archiver = require('archiver');
-let fileZipper = {};
 const config = require('config');
 const nano = require('nano')(config.get("DBUrl"));
 
-fileZipper.getZippedImages = function (filename) {
-    let filePath = __dirname+"/zip/"+filename+"/";
+function main(params){
+    let filename = params['filename'];
+    let filePath = __dirname+"/"+filename+"/";
     return new Promise(function (resolve, reject) {
         let images = nano.use('images');
         images.get(filename)
@@ -24,6 +24,11 @@ fileZipper.getZippedImages = function (filename) {
 
                     zip.on('end', function () {
                         console.log('Data has been drained');
+                        let zipStream = fs.createReadStream(__dirname + '/'+filename+'.zip');
+                        resolve({
+                            zipStream
+                        })
+                        // resolve({filepath:__dirname + '/'+filename+'.zip'})
                     });
 
                     zip.on('warning', function(err) {
@@ -47,8 +52,9 @@ fileZipper.getZippedImages = function (filename) {
                     fs.writeFileSync(filePath+"greyscale."+imageDoc.greyscale.fileType,new Buffer(imageDoc.greyscale.data, 'base64'))
                     fs.writeFileSync(filePath+"enhance."+imageDoc.enhance.fileType,new Buffer(imageDoc.enhance.data, 'base64'))
                     zip.directory(filePath,false);
-                    resolve(zip);
-
+                    let output = fs.createWriteStream(__dirname + '/'+filename+'.zip');
+                    zip.pipe(output);
+                    zip.finalize();
                 }else{
                     let response = {
                         status: "404",
@@ -68,7 +74,7 @@ fileZipper.getZippedImages = function (filename) {
             });
 
     });
-};
+}
 
 
-module.exports = fileZipper;
+module.exports.main=main;

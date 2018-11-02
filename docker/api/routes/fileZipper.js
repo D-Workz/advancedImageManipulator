@@ -24,6 +24,8 @@ fileZipper.getZippedImages = function (filename) {
 
                     zip.on('end', function () {
                         console.log('Data has been drained');
+                        let zipStream = fs.createReadStream(__dirname + '/'+filename+'.zip')
+                        resolve(zipStream)
                     });
 
                     zip.on('warning', function(err) {
@@ -47,8 +49,9 @@ fileZipper.getZippedImages = function (filename) {
                     fs.writeFileSync(filePath+"greyscale."+imageDoc.greyscale.fileType,new Buffer(imageDoc.greyscale.data, 'base64'))
                     fs.writeFileSync(filePath+"enhance."+imageDoc.enhance.fileType,new Buffer(imageDoc.enhance.data, 'base64'))
                     zip.directory(filePath,false);
-                    resolve(zip);
-
+                    let output = fs.createWriteStream(__dirname + '/'+filename+'.zip');
+                    zip.pipe(output);
+                    zip.finalize();
                 }else{
                     let response = {
                         status: "404",

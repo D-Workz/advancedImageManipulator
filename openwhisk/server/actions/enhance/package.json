@@ -1,0 +1,14 @@
+{
+  "name": "imagemanipulator",
+  "version": "1.0.0",
+  "main": "enhance.js",
+  "description": "this is an image manipulator for pen whisk",
+  "dependencies": {
+    "archiver": "^3.0.0",
+    "config": "^2.0.1",
+    "fs": "0.0.1-security",
+    "jimp": "^0.5.6",
+    "nano": "^7.1.0",
+    "openwhisk": "^3.18.0"
+  }
+}

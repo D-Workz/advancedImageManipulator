@@ -1,4 +1,3 @@
-let enhance = {};
 const jimp = require('jimp');
 const utils = require('./utils');
 const config = require('config');
@@ -7,7 +6,8 @@ const nano = require('nano')(config.get("DBUrl"));
 
 
 
-enhance.enhanceImage = function (filename){
+function main(params){
+    let filename = params['filename'];
     return new Promise(function (resolve, reject) {
         let images = nano.use('images');
         images.get(filename).then(imageDoc =>{
@@ -22,7 +22,7 @@ enhance.enhanceImage = function (filename){
                         }
                         utils.saveImageToDB(image,filename,"enhance")
                             .then(name =>{
-                                resolve(name);
+                                resolve({name:name});
                             })
                     })
                 }).catch(err => {
@@ -41,7 +41,7 @@ enhance.enhanceImage = function (filename){
             reject(response);
         })
     });
-};
+}
 
 
-module.exports = enhance;
+module.exports.main=main;

@@ -1,4 +1,3 @@
-let grayscale = {};
 const jimp = require('jimp');
 const utils = require('./utils');
 const config = require('config');
@@ -39,7 +38,6 @@ function main(params){
         })
 
     });
-};
+}
 
-
-module.exports.main=main;;
+module.exports.main=main;

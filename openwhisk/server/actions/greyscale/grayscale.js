@@ -6,7 +6,8 @@ const config = require('config');
 const nano = require('nano')(config.get("DBUrl"));
 
 
-grayscale.grayscaleImage = function (filename){
+function main(params){
+    let filename = params['filename'];
     return new Promise(function (resolve, reject) {
         let images = nano.use('images');
         images.get(filename)
@@ -21,7 +22,7 @@ grayscale.grayscaleImage = function (filename){
                             }
                             utils.saveImageToDB(image,filename,"greyscale")
                                 .then(name =>{
-                                    resolve(name);
+                                    resolve({name:name});
                                 })
                         })
                 }).catch(err => {
@@ -41,4 +42,4 @@ grayscale.grayscaleImage = function (filename){
 };
 
 
-module.exports = grayscale;
+module.exports.main=main;;

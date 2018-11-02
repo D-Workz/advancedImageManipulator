@@ -1,6 +1,6 @@
 var url = "http://localhost:3001/images/upload";
 // url = "http://192.168.0.11:9090/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/upload";
-url = "http://172.25.0.79:9090/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/upload";
+url = "http://172.25.0.79:9090/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/upload2";
 // url = "http://172.25.0.79:9090/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/sbSave";
 
 var uploadedImage;

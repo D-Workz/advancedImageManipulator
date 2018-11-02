@@ -14,65 +14,35 @@ function main(params){
         response.message = "Please provide an image.";
         return response;
     }
-    return initDBsaveImage(image)
+    return new Promise(function (resolve, reject) {
+        initDBsaveImage(image)
+            .then (name => {
+                let ow = openwhisk({ignore_certs:true});
+                    ow.actions
+                        .invoke(
+                            {name: "watermark", result:true, param:{filename:name}}
+                        )
+                        .then((result1) => {
+                            resolve({res:result1, hans:"hans"});
+                        })
+                        .catch(err =>{
+                            reject({error:err});
+                        })
+            });
+        })
+
 }
 
 module.exports.main=main;
 
 
-// router.post('/upload', function (req, res, next) {
-//
-//     let image = req.body.image;
-//
-//     return initDBsaveImage(image)
-//         .then(imageName => {
-//             return watermark.watermarkImage(imageName)
-//                 .then(wimage => {
-//                     return Promise.all([
-//                         grayscale.grayscaleImage(wimage),
-//                         enhance.enhanceImage(wimage)
-//                     ]).then(result => {
-//                         if(result[1] === result[0]){
-//                             console.log("All image types saved.");
-//                             let filename = result[0];
-//                             (fileZipper.getZippedImages(filename)).then(zip =>{
-//                                 zip.pipe(res);
-//                                 res.setHeader('Content-disposition', 'attachment; filename=' + filename + '.zip');
-//                                 zip.finalize();
-//                             }).catch(err =>{
-//                                 if(err.status === 404){
-//                                     return res.status(404).json({message:err.message});
-//                                 }else {
-//                                     return res.status(500).json({message:"Unknown error."});
-//                                 }
-//                             })
-//                         }
-//                     }).catch(err =>{
-//                         if(err.status === 404){
-//                             return res.status(404).json({message:err.message});
-//                         }else {
-//                             return res.status(500).json({message:"Unknown error."});
-//                         }
-//                     })
-//             }).catch(err => {
-//                 if(err.status === 404){
-//                     return res.status(404).json({message:err.message});
-//                 }else {
-//                     return res.status(500).json({message:"Unknown error."});
-//                 }
-//             });
-//     })
-//
-//
-// });
-//
 function initDBsaveImage(image) {
     return new Promise(function (resolve, reject) {
-        return initCouchDB()
+        initCouchDB()
             .then(response => {
                 if (response) {
                     let filename = (Math.round((new Date()).getTime() / 1000)).toString();
-                    return utils.saveImageToDB(image, filename, "original")
+                    utils.saveImageToDB(image, filename, "original")
                         .then(name => {
                             resolve({name:name});
                         })

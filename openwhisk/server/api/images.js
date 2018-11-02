@@ -1,7 +1,7 @@
 const utils = require('./utils');
 const config = require('config');
 const openwhisk = require("openwhisk");
-
+const nano = require('nano')(config.get("DBUrl"));
 
 function main(params){
     let response = {
@@ -15,11 +15,11 @@ function main(params){
         return response;
     }
     return initDBsaveImage(image)
-        .then( imageName => {
-            response.status = 200;
-            response.message = imageName;
-            return response;
-        })
+        // .then( imageName => {
+        //     response.status = 200;
+        //     response.message = imageName;
+        //     return response;
+        // })
 }
 
 module.exports.main=main;
@@ -73,18 +73,20 @@ module.exports.main=main;
 //
 function initDBsaveImage(image) {
     return new Promise(function (resolve, reject) {
-        initCouchDB()
+        return initCouchDB()
             .then(response => {
                 if (response) {
                     let filename = (Math.round((new Date()).getTime() / 1000)).toString();
-                    utils.saveImageToDB(image, filename, "original")
+                    return utils.saveImageToDB(image, filename, "original")
                         .then(name => {
-                            resolve(name);
+                            resolve({name:name});
                         })
                         .catch(err => {
                             reject(err);
                         })
 
+                }else{
+                    reject({error:"no response from couchdb"});
                 }
             })
     });
@@ -93,7 +95,6 @@ function initDBsaveImage(image) {
 
 function initCouchDB() {
     let dbExists = false;
-    const nano = require('nano')(config.get("DBUrl"));
     return new Promise(function (resolve, reject) {
         nano.db.list().then((body) => {
             body.forEach((db) => {

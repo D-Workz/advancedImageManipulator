@@ -1,0 +1,159 @@
+
+How to tun the homework 
+
+Server:
+- Setup I have a second couchdb running in openwhisk, therefore added the following lines to my docker-compose.yml of openwhisk:
+
+      apiCouchDB:
+    image: apache/couchdb:2.1
+    ports:
+    - "3002:5984"
+    environment:
+      COUCHDB_USER: whisk_admin
+      COUCHDB_PASSWORD: some_passw0rd
+    volumes:
+    - ./apiCouchDB/data/:/usr/local/var/lib/couchdb:rw
+    
+Outgoing port is here 3002. 
+
+- now run in the openwhisk repo: https://github.com/apache/incubator-openwhisk-devtools/tree/master/docker-compose the command
+    make run, 
+    to obtain your openwhisk APIHOST.
+
+- unzip all Server files: 
+    - enhance.zip, watermark.zip, greyscale.zip, api.zip, zip.zip
+    
+- in every resulting directory edit the file: config/default 
+    for the DBURL insert: 
+        http://whisk_admin:some_passw0rd@<YOUR APIHOST>:<YOUR PORT OF COUCHDB>
+        
+- zip all files again, keeping the names: 
+        - enhance.zip, watermark.zip, greyscale.zip, api.zip, zip.zip
+
+- Now first create all actions for every server zip do:
+    wsk -i action create <actionName> <actionZip> --kind nodejs:default --web true
+    
+- now create on as an API / Orchestrator to receive the image and call the other actions. 
+    wsk -i api create <apiName> post <actionName(of API.zip)> --response-type json -n <apiName>
+
+- copy url you receive something like: 
+    http://172.25.0.79:9090/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/upload";
+
+        
+        
+Client: 
+- unzip client
+- Edit the first line of the javascripts/script.js --> place openwhisk API here
+- Paste the resulting line from creating the API into the url variable: 
+    http://172.25.0.79:9090/api/23bc46b1-71f6-4ed5-8c54-816aa4f8c502/upload2";
+    
+
+Execution: 
+- you can now open the index.html page of the client, choose an image and send it to the server with the upload button. 
+- The picture will get inserted into your CouchDB. 
+
+- Unfortunately I wasnt able to continue this homework after this point, 
+the amount of hours spent to deliver this result was at least 30 hours and more, 
+    
+Result:
+What should work
+There are 5 actions in openwhisk one is used as an api to handle the POST of the image and (supposed to) orchestrate the actions.
+The api works as far as receiving the image and uploading it into couchdb, something is wrong with invoking other actions. 
+The invoke is done with a npm libary "openwhisk", I couldnt get the configuration right, so at this point the process stops at the moment. 
+(Help please what is wrong?)
+
+What works
+- First remove the orchestrator out of the API. 
+- inside the api --> images.js change the lines: 
+-------------------
+    return new Promise(function (resolve, reject) {
+        initDBsaveImage(image)
+            .then (name => {
+                let ow = openwhisk({ignore_certs:true});
+                    ow.actions
+                        .invoke(
+                            {name: "watermark", result:true, param:{filename:name}}
+                        )
+                        .then((result1) => {
+                            resolve({res:result1, hans:"hans"});
+                        })
+                        .catch(err =>{
+                            reject({error:err});
+                        })
+            });
+        })
+-------------------
+        
+to 
+-------------------
+return initDBsaveImage(image)
+-------------------
+
+- then zip it and create/update the api/upload action, create the api again.
+- Now you can use the client to upload an image as a response in the console, you get the imageName (1541183895)(a timestamp) under which it is saved inside couchdb DBName: (images) 
+- Now use this timestamp to invoke the actions one after another with: 
+    - wsk -i action invoke watermark --result --param filename 1541183895      
+    - wsk -i action invoke greyscale --result --param filename 1541183895
+    and so on 
+- With every action the document 1541183895 is updated with the new image.
+- In the end you can invoke the zip.action and you receive a zip Read Stream.
+
+
+Please consider feedback, when scoring my solution.
+
+
+Feedback:
+Why I couldnt reach in a complete homework. 
+
+Main problems:
+- self tought workflow
+- not sure where to find correct logs
+- unstable installation
+
+Description: 
+After working for more then 30 hours on the assignment, I just ran out of time to continue trying of why openwhisk is not behaving like it should be. 
+
+After having problems getting openwhisk to run I started into the assignment 4 on the friday. 
+I use javascript professionally, so I decided to work on the homework using nodejs. I would write all my code first in a nodejs / express server, since I know how it works and how I can debug it sufficently. 
+My solution was able to do the requeted workflow saving the pictures as files on the server and then returning them as a zip stream, it worked as described in the assignment sheet. 
+This solution took my around 8 hours, I had to implement all the libaries and concern myself with the situation of how to return zip files to a client in the correct way. 
+Monday the assignment was explained again and a couchDB should be used for image processing. I only had to change my writing of files from directories on the server to couchDB, the manipulation and zip functions were working correctly.
+Adding couchDB to my project and making sure, all situations described in the assignment and additional tasks are accounted by like, connecting to the DB, no DB, noImage, wrongImageName, notAllimages for zip and so on was more work than first estimated.
+I had to deal with a lot of additional async callbacks and the situation now of how to smartly zip two base64 strings from a DB into a returnable zip. In the end I write the files now to a directory, then zip it and return it. 
+(there is def a smarter war but I didnt want to spent more time on this, since it is not even part of the actual exercise of the assignment)
+Changing the description on monday and adding the couchDB took me another 10 hours.
+I finally had a node project which satisfied the requirements of the given assignment, now changing it to openwhisk actions, shouldnt take long, for the next day then...
+Starting openwhisk the next day didnt work right away, commands like make stop, make start, make quick-start all just stopped. 
+Pruning containers, images and volumes, didnt help. Only a docker system prune, reset all settings which must have been wrong inside a container or image or whereever, so I was able to start openwhisk again.
+Again 3 hours gone just to run openwhisk. 
+This is now the second time within a two week period that I had to prune my docker, everytime I do so I loose aswell my containers containing my projects for work, which results in a 45 min additional amount of work to restore them. 
+
+I am now finally able to start working on the actual assignment I am now roughly 23 hours in. 
+For changing my node project into openwhisk actions, I made directories containing their own node files. Refactored the code to suit openwhisk and then zipped them and started creating and invoking the actions. 
+More than once I didnt hand any result or response of openwhisk, so my concern of throwing something into a blackbox and not getting something useful out (exception, error, anything) came true. 
+This resulted in the workflow of changing single lines inside my js files, zipping it all again, creating the action, invoking it and hoping for a change. If no better do it again and hope for the better...
+I googled for where to find logs, but seemed like I needed activation Strings or other things, couldnt find any smart logs!
+An extra tricky part was of how does openwhisk deal with zip streams or precesses them (I return now a zip stream which I dont know is useful at all). 
+This resulted in that it took me around 8 hours just to get all my actions working like they are now. 
+Now I only had to do the orchestrator inside my main action/API, after 3 hours of zipping and hoping for the best I ran out of time, I couldnt get the npm module to work with my openwhisk, dont know...
+(Help please...)
+
+All my work can be found inside this github repo: https://github.com/D-Workz/imageManipulator
+- the docker folder contains my node project, 
+- inside the openwhisk you find the modules of the assignment. 
+
+
+What would I have found helpful:
+- A consitent understandable assignment, no addons after half time
+- A better idea of how to develop openwhisk
+    - I did now setup an additional node project just to test all modules required in the assignment
+    - More time or not have to deal with issues like, how to return a zip file smartly
+    - Woring with openwhisk zipping and trying/hopeing 
+- What is a smart workflow, be it previous testing of actions or working in openwhisk 
+- Receiving meaningful logs (where to find them)
+- A version of openwhisk which doesnt require me to reset everything regulary. 
+
+
+
+
+

@@ -18,18 +18,18 @@ function main(params){
         initDBsaveImage(image)
             .then (name => {
                 let ow = openwhisk({ignore_certs:true});
-                    ow.actions
-                        .invoke(
-                            {name: "watermark", result:true, param:{filename:name}}
-                        )
-                        .then((result1) => {
-                            resolve({res:result1, hans:"hans"});
-                        })
-                        .catch(err =>{
-                            reject({error:err});
-                        })
+                ow.actions
+                    .invoke(
+                        {name: "watermark", result:true, param:{filename:name}}
+                    )
+                    .then((result1) => {
+                        resolve({res:result1, hans:"hans"});
+                    })
+                    .catch(err =>{
+                        reject({error:err});
+                    })
             });
-        })
+    })
 
 }
 

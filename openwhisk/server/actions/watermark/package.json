@@ -1,30 +1,12 @@
 {
   "name": "imagemanipulator",
   "version": "1.0.0",
-  "main": "grayscale.js",
+  "main": "watermark.js",
   "description": "this is an image manipulator for pen whisk",
   "dependencies": {
     "@cloudant/cloudant": "^3.0.1",
-    "archiver": "^3.0.0",
-    "body-parser": "^1.18.3",
     "config": "^2.0.1",
-    "cookie-parser": "~1.4.3",
-    "debug": "^2.6.9",
-    "express": "~4.16.0",
-    "fs": "0.0.1-security",
-    "http-errors": "~1.6.2",
-    "iconv-lite": "^0.4.24",
-    "ipaddr.js": "^1.8.1",
     "jimp": "^0.5.6",
-    "message-hub-rest": "^2.0.0",
-    "morgan": "~1.9.0",
-    "nano": "^7.1.0",
-    "node-rdkafka": "^2.4.2",
-    "openwhisk": "^3.18.0",
-    "proxy-addr": "^2.0.4",
-    "pug": "2.0.0-beta11",
-    "qs": "^6.5.2",
-    "raw-body": "^2.3.3",
-    "request": "^2.88.0"
+    "node-rdkafka": "^2.4.2"
   }
 }

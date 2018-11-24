@@ -1,11 +1,11 @@
 let utils = {};
 const config = require('config');
-
+const Kafka = require('node-rdkafka');
 const cloudantUrl = "https://" + config.get('cloudant.username') + ":" + config.get('cloudant.password') + "@" + config.get('cloudant.host');
 const cloudant = require('@cloudant/cloudant')({url: cloudantUrl});
 let cloudantDb = cloudant.use(config.get('cloudant.dbName'));
 
-const Kafka = require('node-rdkafka');
+
 
 let opts = {};
 let services;

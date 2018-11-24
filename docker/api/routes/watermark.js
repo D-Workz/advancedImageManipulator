@@ -2,11 +2,8 @@ let watermark = {};
 const jimp = require('jimp');
 const utils = require('./utils');
 
-watermark.watermarkImage = function (){
+watermark.watermarkImage = function (imageName){
     return new Promise(function (resolve, reject) {
-        let imageName;
-        for(let i=1;i<=10;i++){
-            imageName = "image"+i;
             utils
                 .getImageAndWatermarkFromDB(imageName)
                 .then(doc => {
@@ -30,8 +27,9 @@ watermark.watermarkImage = function (){
                                     if(err){
                                         reject(err);
                                     }
-
+                                    resolve(filename);
                                     utils.sendToKafka(filename);
+
                                     // utils.saveImageToDB(image,filename,"watermark")
                                     //     .then(name =>{
                                     //         utils.sendToKafka(name);
@@ -48,7 +46,6 @@ watermark.watermarkImage = function (){
                     console.log(err);
                     reject(err);
                 })
-        }
     })
 };
 

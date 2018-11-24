@@ -1,43 +1,54 @@
 const jimp = require('jimp');
-let watermarkImage = __dirname+"/watermark.png";
 const utils = require('./utils');
-const config = require('config');
-const nano = require('nano')(config.get("DBUrl"));
-
 
 function main(params){
-    let filename = params['filename'];
     return new Promise(function (resolve, reject) {
-        let images = nano.use('images');
-        images.get(filename).then(imageDoc =>{
-            let picture = jimp.read(new Buffer(imageDoc.original.data, 'base64'));
-            let wpicture = jimp.read(watermarkImage);
-            return Promise
-                .all([picture, wpicture])
-                .then(images => {
-                    images[0].composite(images[1], 0, 250);
-                    images[0].getBase64(jimp.AUTO, (err, image) => {
-                        if(err){
-                            reject(err);
+        let imageName;
+        for(let i=1;i<=10;i++){
+            imageName = "image"+i;
+            utils
+                .getImageAndWatermarkFromDB(imageName)
+                .then(doc => {
+                    let picture;
+                    let wpicture;
+                    let filename;
+                    for(let x=0;x<doc.length;x++){
+                        if(doc[x].imageName === 'watermark'){
+                            wpicture = jimp.read(new Buffer(doc[x].imageData.data, 'base64'));
+                        }else {
+                            picture = jimp.read(new Buffer(doc[x].imageData.data, 'base64'));
+                            filename = doc[x].imageName;
                         }
-                        utils.saveImageToDB(image,filename,"watermark")
-                            .then(name =>{
-                                resolve({name:name});
-                            })
-                    })
-                }).catch(function (e) {
-                    reject(e);
-                })
-        }).catch( err => {
-            let response = {
-                status: "404",
-                err:err,
-                message:"Couldn't find image to watermark, upload an image first."
-            };
-            reject(response);
-        })
-    });
+                    }
+                    if(picture && wpicture){
+                        return Promise
+                            .all([picture, wpicture])
+                            .then(images => {
+                                images[0].composite(images[1], 0, 250);
+                                images[0].getBase64(jimp.AUTO, (err, image) => {
+                                    if(err){
+                                        reject(err);
+                                    }
 
+                                    utils.sendToKafka(filename);
+                                    // utils.saveImageToDB(image,filename,"watermark")
+                                    //     .then(name =>{
+                                    //         utils.sendToKafka(name);
+                                    //         resolve(name);
+                                    //     })
+                                })
+                            }).catch(function (e) {
+                                reject(e);
+                            })
+                    }
+
+                })
+                .catch( err =>{
+                    console.log(err);
+                    reject(err);
+                })
+        }
+    })
 }
 
 module.exports.main=main;

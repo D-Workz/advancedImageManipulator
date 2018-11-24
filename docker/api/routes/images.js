@@ -3,13 +3,13 @@ const router = express.Router();
 const config = require('config');
 const request = require('request');
 const watermark = require('./watermark')
-
+let url ="https://"+ config.get('IBMCloud.IBM_ApiKey') +config.get('IBMCloud.IBM_ActionURL');
 
 
 
 router.get('/start', function (req, res, next) {
 
-    invokeImageManipulationOnOpenwhisk(0)
+    invokeImageManipulationOnOpenwhisk()
         .then( response => {
             console.log(response);
         })
@@ -20,13 +20,13 @@ router.get('/start', function (req, res, next) {
 
 
 
-function invokeImageManipulationOnOpenwhisk(offset) {
+function invokeImageManipulationOnOpenwhisk() {
 
     watermark.watermarkImage()
         .then(name =>{
             console.log(name);
         })
-    // let url ="https://"+ config.get('IBM_ApiKey') +config.get('IBM_ActionURL');
+
     // return new Promise(function (resolve, reject) {
     //     request({
     //         url: url + "hello-world1/helloworld?blocking=true",

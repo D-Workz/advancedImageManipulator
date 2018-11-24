@@ -1,5 +1,6 @@
 {
   "DBUrl": "http://whisk_admin:some_passw0rd@172.25.0.79:3002",
+  "topicName":"topic_1",
   "cloudant":{
     "username":"4099f8c2-831a-48db-81a4-4f4cd0da2edc-bluemix",
     "password":"907bcee3f38819d095c521aa4f01cffa3cf532a88247e17a21fc95d0271f5686",
@@ -9,6 +10,21 @@
   "IBMCloud":{
     "IBM_ApiKey": "78c64815-2444-43df-8923-324a57feb5a7:THAC1WgnKsJ5ioQk5Sm0GvmF5RbpRb8aoWQuLu30hSuethZIURf15xHFOWyyo58H",
     "IBM_ActionURL": "@openwhisk.eu-gb.bluemix.net/api/v1/namespaces/dennis.sommer.86%40gmail.com_dev/actions/"
+  },
+  "event-stream":{
+    "instance_id": "263b7dc6-63b3-432b-802b-607b40a2bb0a",
+    "mqlight_lookup_url": "https://mqlight-lookup-prod02.messagehub.services.eu-gb.bluemix.net/Lookup?serviceId=263b7dc6-63b3-432b-802b-607b40a2bb0a",
+    "api_key": "OwoBxtz9UCJO4YL6JeBLWwP2fbvPfk57Dun0WkouGii3zNKp",
+    "kafka_admin_url": "https://kafka-admin-prod02.messagehub.services.eu-gb.bluemix.net:443",
+    "kafka_rest_url": "https://kafka-rest-prod02.messagehub.services.eu-gb.bluemix.net:443",
+    "kafka_brokers_sasl": [
+      "kafka05-prod02.messagehub.services.eu-gb.bluemix.net:9093",
+      "kafka03-prod02.messagehub.services.eu-gb.bluemix.net:9093",
+      "kafka04-prod02.messagehub.services.eu-gb.bluemix.net:9093",
+      "kafka02-prod02.messagehub.services.eu-gb.bluemix.net:9093",
+      "kafka01-prod02.messagehub.services.eu-gb.bluemix.net:9093"
+    ],
+    "user": "OwoBxtz9UCJO4YL6",
+    "password": "JeBLWwP2fbvPfk57Dun0WkouGii3zNKp"
   }
-
 }

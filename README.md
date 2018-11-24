@@ -12,8 +12,11 @@ The solution is implemented with:
  * CouchDB in IBM Cloudant: Saving the images.
  * Kafka in IBM Event-Stream/MessageHub: Uses two topics for imageManipulation. The first topic is used after the image is watermarked, the second is used after the image is either greyscaled or enhanced.
 
-### Repository setup
+Triggers are used inside openwhisk, to invoke the corresponding action. 
+* If the trigger of topic_1 is called the action for enhance and greyscale are invoked. 
+* Both actions are writing the filename into topic_2, both times the zip action is called, which checks if all images are in the DB if so it zips these and saves it back the DB. 
 
+### Repository setup
 * The docker folder contains all node files
 * The openwhisk folder contains the files to create openWhisk actions
 
@@ -84,3 +87,22 @@ ibmcloud fn action <update/create> watermark watermark.zip --kind nodejs:default
 choose either update/create action name and zip file. 
 
 Then action can be invoked in ibm or via action url (see endpoints in ibm actions)
+
+
+#### What can be done
+
+Unfortunately the current version cant be executed in Openwhisk, since it runs out of memory. Due to debugging this is because the dependencies of the rdkafka npm module are to big. The files are 80 MB zipped 34 MB, everytime I upload the zip with all dependencies inside the node_modules I receive out of memory. This happens even when I dont call the kafka components (inside util.js). 
+
+If you change the current code in /routes/images, to execute the node version, you can see that the action, should work. The routes/watermark.js has an option, to switch if you want to save the watermarked imgs in DB or if you just want to push the image name into kafka, all this is done in the utils.js
+
+#### Work on:
+##### enhance.js, greyscale.js
+Should reveive a filename, look up the corresponding img in Cloudant, enhance it, save result in DB and write name in topic_2. 
+The functions are both working and the code only has to be adjusted really slightly, all functionalities should be in utils.js add a new topic name to contig/default.json. 
+
+##### zipper.js
+Should receive filename, check in DB if enhance and greyscale have inserted result if so, zip them and save result again in DB. 
+
+##### General 
+* Think of memory proplem, 
+* How to stop the timer after everything is done? 

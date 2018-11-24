@@ -28,7 +28,11 @@ watermark.watermarkImage = function (imageName){
                                         reject(err);
                                     }
                                     resolve(filename);
+
+                                    // PUSH to kafka
                                     utils.sendToKafka(filename);
+
+                                    // WORKS for testing only push to Kafka
 
                                     // utils.saveImageToDB(image,filename,"watermark")
                                     //     .then(name =>{

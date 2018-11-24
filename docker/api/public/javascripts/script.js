@@ -1,63 +1,35 @@
 var url;
 var uploadedImage;
-
+var valBtnStart = true;
+let interval;
 $(document).ready(function() {
-    var confirmBtn = $('#uploadBtn');
-    var $upload = $("#uploadBtn");
-    $("#fileInput").change(function () {
-        readImageFile(this);
-    });
-    $upload.click(function () {
+    var $startBtn = $("#startBtn");
+     $startBtn.click(function () {
         $('#loader').css("display","block");
-        uploadImage(function (response) {
+         var start = new Date;
+         if(valBtnStart){
+             $startBtn.val('stop');
+             valBtnStart = false;
+             interval = setInterval(function() {
+                 $('#timer').text((new Date - start) / 1000 + " Seconds");
+             }, 1000);
+         }else {
+             $startBtn.val('start');
+             valBtnStart = true;
+             clearInterval(interval);
+         }
+         startImageManipulation(function (response) {
             $('#loader').css("display","none");
-            var $loginBox = $("#uploadBox");
-            console.log(response);
-            $loginBox.css("display","none");
             $('#error').css("display","none");
             $('#content').css("display","block");
-
-
         })
     })
 });
 
 
-//reads the input file from an input element and shows a preview
-function readImageFile(input) {
-    if (input.files && input.files[0]) {
-
-        var fileSize = input.files[0].size;
-
-        var errorDiv = $('#error');
-        var errorText = $('#errorText');
-        var confirmBtn = $('#uploadBtn');
-
-        var $preview = $('#userimage-Preview');
-        // 500 kb limit
-        if (fileSize > 2000e3) {
-            errorDiv.slideDown(100);
-            errorText.html("The image file size must be below 500 kB");
-            confirmBtn.attr('disabled', true);
-        } else {
-            var reader = new FileReader();
-            reader.readAsDataURL(input.files[0]);
-            reader.onload = function (e) {
-                errorDiv.slideUp(100);
-                uploadedImage = e.target.result;
-                $('#content').css("display","block");
-                $preview.css("display","block");
-                $preview.attr('src', uploadedImage);
-                confirmBtn.attr('disabled', false);
-            };
-        }
-
-    }
-}
 
 
-function uploadImage(callback) {
-    console.log("trying to upload.");
+function startImageManipulation(callback) {
     url = "http://localhost:3001/images/start";
     $.ajax({
         url: url,

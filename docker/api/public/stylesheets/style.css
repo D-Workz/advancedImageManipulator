@@ -22,6 +22,18 @@
     bottom: 0;
     right: 0;
 }
+#timer{
+    /*float: right;*/
+    /*margin-right: 20px;*/
+    /*font-size: 20px;*/
+    /*color: white;*/
+    /*font-weight: bold;*/
+}
+
+#content{
+    height: 500px;
+    width: 75%;
+}
 
 #loader img{
     z-index: 100;

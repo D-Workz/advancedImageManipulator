@@ -28,13 +28,11 @@ function main(params){
                                         reject(err);
                                     }
 
-                                    utils.sendToKafka(filename);
-                                    resolve(filename);
-                                    // utils.saveImageToDB(image,filename,"watermark")
-                                    //     .then(name =>{
-                                    //         utils.sendToKafka(name);
-                                    //         resolve(name);
-                                    //     })
+                                    utils.saveImageToDB(image,filename,"watermark")
+                                        .then(name =>{
+                                            utils.sendToKafka(name);
+                                            resolve(name);
+                                        })
                                 })
                             }).catch(function (e) {
                                 reject(e);

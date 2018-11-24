@@ -5,8 +5,6 @@
   "description": "this is an image manipulator for pen whisk",
   "dependencies": {
     "@cloudant/cloudant": "^3.0.1",
-    "config": "^2.0.1",
-    "jimp": "^0.5.6",
-    "node-rdkafka": "^2.4.2"
+    "config": "^2.0.1"
   }
 }

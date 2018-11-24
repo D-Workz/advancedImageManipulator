@@ -12,12 +12,14 @@ router.get('/start', function (req, res, next) {
     let imageName;
     for(let i=1;i<=10;i++) {
         imageName = "image" + i;
-        invokeImageManipulationOnOpenwhisk(imageName)
+        return invokeImageManipulationOnOpenwhisk(imageName)
             .then( response => {
                 console.log(response);
+                return res.status(200).json({message:"ok"})
             })
             .catch( error => {
                 console.log(error);
+                return res.status(400).json({message:"error"})
             })
 
     }
@@ -29,11 +31,16 @@ router.get('/start', function (req, res, next) {
 
 function invokeImageManipulationOnOpenwhisk(imageName) {
     return new Promise(function (resolve, reject) {
-    // watermark.watermarkImage(imageName)
+
+    // NODE
+        // watermark.watermarkImage(imageName)
     //     .then(name =>{
     //         console.log(name);
     //         resolve(name);
     //     })
+
+
+        // OPENWHISK
         request({
             url: url + "watermark?blocking=true",
             // url: url + "hello-world1/helloworld?blocking=true",

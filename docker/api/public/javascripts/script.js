@@ -7,7 +7,6 @@ $(document).ready(function() {
     $("#fileInput").change(function () {
         readImageFile(this);
     });
-    confirmBtn.attr('disabled', true);
     $upload.click(function () {
         $('#loader').css("display","block");
         uploadImage(function (response) {
@@ -36,7 +35,7 @@ function readImageFile(input) {
 
         var $preview = $('#userimage-Preview');
         // 500 kb limit
-        if (fileSize > 500e3) {
+        if (fileSize > 2000e3) {
             errorDiv.slideDown(100);
             errorText.html("The image file size must be below 500 kB");
             confirmBtn.attr('disabled', true);
@@ -59,10 +58,10 @@ function readImageFile(input) {
 
 function uploadImage(callback) {
     console.log("trying to upload.");
-    url = "http://localhost:3001/images/upload";
+    url = "http://localhost:3001/images/start";
     $.ajax({
         url: url,
-        type: "post",
+        type: "get",
         data: {
             image: uploadedImage
         },

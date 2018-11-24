@@ -2,6 +2,9 @@ let utils = {};
 const config = require('config');
 const nano = require('nano')(config.get("DBUrl"));
 
+const cloudantUrl = "https://" + message.username + ":" + message.password + "@" + message.host;
+const cloudant = require('cloudant')({url: cloudantUrl});
+
 utils.saveImageToDB = function(image, filename, type) {
     return new Promise(function (resolve, reject) {
         if(type === "original"){
@@ -110,6 +113,50 @@ function decodeBase64Image(dataString) {
     response.type = matches[1];
     response.data = matches[2];
     return response;
+}
+
+let message = {
+    "url":"https://4099f8c2-831a-48db-81a4-4f4cd0da2edc-bluemix:907bcee3f38819d095c521aa4f01cffa3cf532a88247e17a21fc95d0271f5686@4099f8c2-831a-48db-81a4-4f4cd0da2edc-bluemix.cloudant.com",
+    "dbname":"images",
+    "query":{
+        "selector": {
+            "name": "image10"
+        },
+        "fields": ["_id", "_rev", "name", "data"],
+        "limit": 2,
+        "skip": 0,
+        "execution_stats": true
+    },
+    "host":"4099f8c2-831a-48db-81a4-4f4cd0da2edc-bluemix.cloudant.com",
+    "username":"4099f8c2-831a-48db-81a4-4f4cd0da2edc-bluemix",
+    "password":"907bcee3f38819d095c521aa4f01cffa3cf532a88247e17a21fc95d0271f5686"
+}
+
+function getCloudantAccount() {
+    // full cloudant URL - Cloudant NPM package has issues creating valid URLs
+    // when the username contains dashes (common in Bluemix scenarios)
+    var cloudantUrl;
+
+    if (message.url) {
+        // use bluemix binding
+        cloudantUrl = message.url;
+    } else {
+        if (!message.host) {
+            return 'cloudant account host is required.';
+        }
+        if (!message.username) {
+            return 'cloudant account username is required.';
+        }
+        if (!message.password) {
+            return 'cloudant account password is required.';
+        }
+
+        cloudantUrl = "https://" + message.username + ":" + message.password + "@" + message.host;
+
+    }
+    return require('cloudant')({
+        url: cloudantUrl
+    });
 }
 
 

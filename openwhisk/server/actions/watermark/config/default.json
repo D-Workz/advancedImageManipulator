@@ -1,3 +1,14 @@
 {
-  "DBUrl": "http://whisk_admin:some_passw0rd@172.25.0.79:3002"
+  "DBUrl": "http://whisk_admin:some_passw0rd@172.25.0.79:3002",
+  "cloudant":{
+    "username":"4099f8c2-831a-48db-81a4-4f4cd0da2edc-bluemix",
+    "password":"907bcee3f38819d095c521aa4f01cffa3cf532a88247e17a21fc95d0271f5686",
+    "host":"4099f8c2-831a-48db-81a4-4f4cd0da2edc-bluemix.cloudant.com",
+    "dbName": "images"
+  },
+  "IBMCloud":{
+    "IBM_ApiKey": "78c64815-2444-43df-8923-324a57feb5a7:THAC1WgnKsJ5ioQk5Sm0GvmF5RbpRb8aoWQuLu30hSuethZIURf15xHFOWyyo58H",
+    "IBM_ActionURL": "@openwhisk.eu-gb.bluemix.net/api/v1/namespaces/dennis.sommer.86%40gmail.com_dev/actions/"
+  }
+
 }

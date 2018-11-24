@@ -5,6 +5,7 @@
   "description": "this is an image manipulator for pen whisk",
   "dependencies": {
     "archiver": "^3.0.0",
+    "cloudant": "^1.10.0-NOTICE",
     "config": "^2.0.1",
     "fs": "0.0.1-security",
     "jimp": "^0.5.6",

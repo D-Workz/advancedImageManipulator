@@ -15,6 +15,5 @@ COPY . /var/src
 # Expose website on port
 EXPOSE 3001
 
-ENV NODE_ENV docker-development
 
 CMD npm start

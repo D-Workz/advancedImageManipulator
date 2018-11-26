@@ -106,8 +106,5 @@ Another assignment, which was about configuring different services, waiting for 
 
 Every week I tried another way of running the necessary services, for this week it was running services with IBM, which took a chunk of hours to configure and run. Had to use new libaries again, in the end it didnt work again, even after all these hours spent. 
 
-The tasks were close to impossible to solve, which showed in that the "musterlösungen" given did not even meet the requirements of the assignments. From a student standpoint I have the feeling I know as much if not more about the technologies introduced, which doesnt feel correct if you have no where to ask questions and get competent answers. 
 
-I am really disappointed with the overall course the infrastructre or the help provided, which mostly just to acknowledge that things didnt work. Changes of assignment sheets half way trough assignments didnt made things better.
  
-Thanks but no Thanks

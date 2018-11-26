@@ -106,8 +106,6 @@ Another assignment, which was about configuring different services, waiting for 
 
 Every week I tried another way of running the necessary services, for this week it was running services with IBM, which took a chunk of hours to configure and run. Had to use new libaries again, in the end it didnt work again, even after all these hours spent. 
 
-I am more than glad about the fact that this is the last homework and I only have to try to solve the final assignment. Afterwards I will never use openWhisk or any of the services again, the only thing I learned is that it doesnt work, neither stable in java nor js. 
-
 The tasks were close to impossible to solve, which showed in that the "musterlösungen" given did not even meet the requirements of the assignments. From a student standpoint I have the feeling I know as much if not more about the technologies introduced, which doesnt feel correct if you have no where to ask questions and get competent answers. 
 
 I am really disappointed with the overall course the infrastructre or the help provided, which mostly just to acknowledge that things didnt work. Changes of assignment sheets half way trough assignments didnt made things better.

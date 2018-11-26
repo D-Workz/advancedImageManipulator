@@ -2,12 +2,15 @@ const fs = require('fs');
 const archiver = require('archiver');
 let fileZipper = {};
 const config = require('config');
-const nano = require('nano')(config.get("DBUrl"));
+
+const cloudantUrl = "https://" + config.get('cloudant.username') + ":" + config.get('cloudant.password') + "@" + config.get('cloudant.host');
+const cloudant = require('@cloudant/cloudant')({url: cloudantUrl});
+let cloudantDb = cloudant.use(config.get('cloudant.dbName'));
 
 fileZipper.getZippedImages = function (filename) {
     let filePath = __dirname+"/zip/"+filename+"/";
     return new Promise(function (resolve, reject) {
-        let images = nano.use('images');
+        let images = cloudantDb.use('images');
         images.get(filename)
             .then(imageDoc =>{
                 if(imageDoc.greyscale && imageDoc.enhance){

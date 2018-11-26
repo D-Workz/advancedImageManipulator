@@ -3,12 +3,14 @@ const jimp = require('jimp');
 const utils = require('./utils');
 const config = require('config');
 
-const nano = require('nano')(config.get("DBUrl"));
+const cloudantUrl = "https://" + config.get('cloudant.username') + ":" + config.get('cloudant.password') + "@" + config.get('cloudant.host');
+const cloudant = require('@cloudant/cloudant')({url: cloudantUrl});
+let cloudantDb = cloudant.use(config.get('cloudant.dbName'));
 
 
 grayscale.grayscaleImage = function (filename){
     return new Promise(function (resolve, reject) {
-        let images = nano.use('images');
+        let images = cloudantDb.use('images');
         images.get(filename)
             .then(imageDoc =>{
             jimp.read(new Buffer(imageDoc.watermark.data, 'base64'))
@@ -21,6 +23,8 @@ grayscale.grayscaleImage = function (filename){
                             }
                             utils.saveImageToDB(image,filename,"greyscale")
                                 .then(name =>{
+                                    let topic = config.get('topicName1');
+                                    utils.sendToKafka(name, topic);
                                     resolve(name);
                                 })
                         })

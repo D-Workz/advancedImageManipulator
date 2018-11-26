@@ -28,9 +28,9 @@ watermark.watermarkImage = function (imageName){
                                         reject(err);
                                     }
                                     resolve(filename);
-
+                                    let topic = config.get('topicName1');
                                     // PUSH to kafka
-                                    utils.sendToKafka(filename);
+                                    utils.sendToKafka(filename, topic);
 
                                     // WORKS for testing only push to Kafka
 

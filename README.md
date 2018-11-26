@@ -16,6 +16,7 @@ Triggers are used inside openwhisk, to invoke the corresponding action.
 * If the trigger of topic_1 is called the action for enhance and greyscale are invoked. 
 * Both actions are writing the filename into topic_2, both times the zip action is called, which checks if all images are in the DB if so it zips these and saves it back the DB. 
 
+
 ### Repository setup
 * The docker folder contains all node files
 * The openwhisk folder contains the files to create openWhisk actions
@@ -74,12 +75,10 @@ all dependencies are inside to /watermark folder.
 The code of the action is slightly refactored from the /docker/api/routes/watermark.js version, to suit the needs of OpenWhisk. 
 
 folder is zipped and uploaded to ibm-bluemix:
-You need the login I send you in whatsapp (email & pw) 
 then u need to execute this command (I put this into my bash file): 
 ```
 alias ibmConnect='ibmcloud login -a api.eu-de.bluemix.net && ibmcloud target -r eu-gb -o "dennis.sommer.86@gmail.com" -s "dev"'
 ```
-afterwards you get promted to enter my email and pw.
 Then you can create an action like:
 ```
 ibmcloud fn action <update/create> watermark watermark.zip --kind nodejs:default --web true
@@ -96,13 +95,21 @@ Unfortunately the current version cant be executed in Openwhisk, since it runs o
 If you change the current code in /routes/images, to execute the node version, you can see that the action, should work. The routes/watermark.js has an option, to switch if you want to save the watermarked imgs in DB or if you just want to push the image name into kafka, all this is done in the utils.js
 
 #### Work on:
-##### enhance.js, greyscale.js
-Should reveive a filename, look up the corresponding img in Cloudant, enhance it, save result in DB and write name in topic_2. 
-The functions are both working and the code only has to be adjusted really slightly, all functionalities should be in utils.js add a new topic name to contig/default.json. 
-
-##### zipper.js
-Should receive filename, check in DB if enhance and greyscale have inserted result if so, zip them and save result again in DB. 
 
 ##### General 
 * Think of memory proplem, 
 * How to stop the timer after everything is done? 
+
+### Feedback
+
+Another assignment, which was about configuring different services, waiting for feedback, a lot of hours spent in try and error, task description change in the middle of the assignment, feedback came two days before submission of tasks to use other programming language or unknown limitations of services, which made it then impossible to restructure everything in the time given. 
+
+Every week I tried another way of running the necessary services, for this week it was running services with IBM, which took a chunk of hours to configure and run. Had to use new libaries again, in the end it didnt work again, even after all these hours spent. 
+
+I am more than glad about the fact that this is the last homework and I only have to try to solve the final assignment. Afterwards I will never use openWhisk or any of the services again, the only thing I learned is that it doesnt work, neither stable in java nor js. 
+
+The tasks were close to impossible to solve, which showed in that the "musterlösungen" given did not even meet the requirements of the assignments. From a student standpoint I have the feeling I know as much if not more about the technologies introduced, which doesnt feel correct if you have no where to ask questions and get competent answers. 
+
+I am really disappointed with the overall course the infrastructre or the help provided, which mostly just to acknowledge that things didnt work. Changes of assignment sheets half way trough assignments didnt made things better.
+ 
+Thanks but no Thanks

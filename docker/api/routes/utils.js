@@ -10,7 +10,7 @@ const Kafka = require('node-rdkafka');
 let opts = {};
 let services;
 
-utils.sendToKafka = function (message){
+utils.sendToKafka = function (message, topic){
     services = config.get('event-stream');
     opts.brokers = services.kafka_brokers_sasl;
     opts.api_key = services.api_key;
@@ -34,10 +34,10 @@ utils.sendToKafka = function (message){
     for (let key in driver_options) {
         producer_opts[key] = driver_options[key];
     }
-    buildProducer(producer_opts, message)
+    buildProducer(producer_opts, message, topic)
 }
 
-function buildProducer(producer_opts, message) {
+function buildProducer(producer_opts, message, topic) {
     return new Promise(function (resolve, reject) {
 
         // Create Kafka producer
@@ -66,7 +66,7 @@ function buildProducer(producer_opts, message) {
             var key = 'Key';
             console.log('The producer has started');
             message = new Buffer('{name:'+message+'}');
-            producer.produce(config.get('topicName'), 0, message, key);
+            producer.produce(topic, 0, message, key);
         });
         producer.connect();
     })

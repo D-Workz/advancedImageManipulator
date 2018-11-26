@@ -6,6 +6,10 @@ git@github.com:D-Workz/advancedImageManipulator.git
 ```
 ### Description
 
+This solution is provided by: 
+Dennis Sommer and 
+Phillip Häusle 
+
 The solution is implemented with:
  * A node server: Implementing the start of the image manipulation process and starting the timer. This is done on the client side, on server side the openWhisk action is invoked, which starts the image manipulation.
  * OpenWhisk actions in IBM-bluemix: The action implemented is the watermark image. It gets invoked by an image name, looks inside the IBM-Cloudant CouchDB for the data files, then adds the watermark on the image, saves it back in the DB and writes the imageName to IBM event-stream topic_1.
